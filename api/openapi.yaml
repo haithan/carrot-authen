@@ -1,0 +1,13 @@
+openapi: 3.0.0
+info:
+  title: Carrott Backend Docs
+  version: '1.0'
+  contact:
+    name: Carrott Engineering
+  description: Carrott backend APIs.
+servers:
+  - url: '/api/v1'
+paths:
+components:
+  schemas:
+    
