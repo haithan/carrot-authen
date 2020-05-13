@@ -12,12 +12,6 @@ const swaggerDocument = jsYaml.safeLoad(
 api.use(bodyParser.json());
 api.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// api.post(
-//   '/register',
-//   // validate request with Blaize user schema expecting a new user
-//   validateBlaizeUserSchema({ isRegister: true }),
-//   handleRegister
-// );
 
 // convert validation error to json
 api.use((err, req, res, next) => {
