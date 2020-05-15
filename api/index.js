@@ -10,12 +10,14 @@ const swaggerDocument = jsYaml.safeLoad(
 );
 const handleRegister = require('./handlers/auth/register')
 const handleLogin = require('./handlers/auth/login');
+const handlePasswordReset = require('./handlers/auth/password-reset');
 
 api.use(bodyParser.json());
 api.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 api.post('/register', handleRegister);
 api.post('/login', handleLogin);
+api.post('/password-reset', handlePasswordReset);
 
 // convert validation error to json
 api.use((err, req, res, next) => {
