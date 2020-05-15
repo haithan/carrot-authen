@@ -8,10 +8,14 @@ const fs = require('fs');
 const swaggerDocument = jsYaml.safeLoad(
   fs.readFileSync('api/openapi.yaml', 'utf-8')
 );
+const handleRegister = require('./handlers/auth/register')
+const handleLogin = require('./handlers/auth/login');
 
 api.use(bodyParser.json());
 api.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+api.post('/register', handleRegister);
+api.post('/login', handleLogin);
 
 // convert validation error to json
 api.use((err, req, res, next) => {
