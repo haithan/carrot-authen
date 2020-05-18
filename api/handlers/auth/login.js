@@ -1,6 +1,6 @@
 const connection = require("../../database/connection");
 const { createToken } = require("../../utils/jwt-token");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 module.exports = async (req, res, next) => {
   const email = req.body.email;

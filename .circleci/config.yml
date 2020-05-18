@@ -1,0 +1,63 @@
+version: 2
+jobs:
+  unit-test:
+    working_directory: ~/app
+    docker:
+      - image: circleci/node:latest 
+    steps:
+      - checkout
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache: 
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - save_cache: 
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Run tests 
+          command: 'yarn run test'
+  docker-build-deploy-image:
+    working_directory: ~/app
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout
+      - run: | 
+          docker build -t carrott/backendservices .  
+          echo "Build done ---> start login"
+          docker login -u $DOCKER_LOGIN	-p $DOCKER_PASSWORD
+          echo "login -----> push"
+          docker push carrott/backendservices
+  deploy-aws:
+    working_directory: ~/app
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - checkout
+      - run: 
+          name: Installing deployment dependencies
+          working_directory: /
+          command: 'sudo pip install awsebcli --upgrade'
+      - run: 
+          name: Deploying application to Elastic Beanstalk
+          command: eb deploy
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - unit-test
+      - docker-build-deploy-image:
+          requires:
+            - unit-test
+      - deploy-staging:
+          filters:
+            branches:
+              only:
+                - master 
+          requires:
+            - docker-build-deploy-image

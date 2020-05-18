@@ -1,5 +1,5 @@
 const connection = require("../../database/connection");
-const bcrpyt = require("bcrypt");
+const bcrpyt = require("bcryptjs");
 const saltRounds = 10;
 
 module.exports = async (req, res, next) => {
