@@ -14,7 +14,6 @@ module.exports = async (req, res, next) => {
     updated_at: today,
   };
   try {
-
     connection.query("INSERT INTO users SET ?", users, function (
       error,
       results,
