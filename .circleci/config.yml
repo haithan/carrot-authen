@@ -23,8 +23,6 @@ jobs:
           command: 'yarn run test'
   docker-deploy-image:
     working_directory: ~/app
-    machine:
-      docker_layer_caching: true # (4)
     steps:
       - checkout
       - run: | # (5)  
