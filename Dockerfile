@@ -1,14 +1,7 @@
 FROM node:lts-alpine
-
-WORKDIR /var/app
-
-EXPOSE 3000
-
-ENV NODE_ENV 'production'
-
+WORKDIR '/app'
+COPY package.json .
+RUN yarn
 COPY . .
-
-RUN yarn install --production --pure-lockfile --no-audit
-
-ENV NODE_ENV production
-CMD node index.js
+EXPOSE 3000
+CMD ["node", "index.js"]
