@@ -1,44 +1,57 @@
 version: 2
-  jobs:
-    build:
-      branches:
-        only:
-          - master
-          - development
-        docker:
-          - image: circleci/node:8.0
-          - image: docker:17.09.1-ce-git  # enable the docker build support
-       working_directory: ~/repo
-         steps:
-           - checkout
-           - setup_remote_docker
-           - restore_cache:
-             keys:
-               - v1-dependencies-{{ checksum "package.json" }}
-               - v1-dependencies-
-    
-          # clearing the cache
-          - run: yarn cache clear --force
-          # - run: rm package-lock.json
-          - run: yarn install
-          - save_cache:
-            paths:
-              - node_modules
-            key: v1-dependencies-{{ checksum "package.json" }}
-          # run tests!
-          - run: yarn run test
-          # build the docker image on success
-          - run:
-            name: Build Success
-            when: on_success
-            command: |
-              docker --version
-              docker login -u=$DOCKER_LOGIN -p=$DOCKER_PASSWORD
-              docker build --tag carrott/backendservices:$CIRCLE_BRANCH --build-arg MACHINE_NAME=backendservices-$CIRCLE_BRANCH .
-              docker push carrott/backendservices:$CIRCLE_BRANCH
-              echo "Docker build made sucessfully!! for backendservices $CIRCLE_BRANCH"
-          - run:
-            name: Build Failure
-            when: on_fail
-            command: |
-              echo "ERROR building <application_name> $CIRCLE_BRANCH"
+jobs:
+  test:
+    working_directory: ~/app
+    docker:
+      - image: circleci/node:latest # (1)
+    steps:
+      - checkout
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache: # (2)
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - save_cache: 
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Run tests # (3)
+          command: 'yarn run test'
+  docker-deploy-image:
+    working_directory: ~/app
+    machine:
+      docker_layer_caching: true # (4)
+    steps:
+      - checkout
+      - run: | # (5)  
+          docker build -t carrott/backendservices .  
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push carrott/backendservices
+  deploy-aws:
+    working_directory: ~/app
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - checkout
+      - run: # (6)
+          name: Installing deployment dependencies
+          working_directory: /
+          command: 'sudo pip install awsebcli --upgrade'
+      - run: # (7)
+          name: Deploying application to Elastic Beanstalk
+          command: eb deploy
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - test
+      - docker-deploy-image:
+          requires:
+            - test
+      - deploy-aws:
+          requires:
+            - docker-deploy-image
