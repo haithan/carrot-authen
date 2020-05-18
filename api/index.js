@@ -13,6 +13,7 @@ const handleLogin = require('./handlers/auth/login');
 const handlePasswordReset = require('./handlers/auth/password-reset');
 
 api.use(bodyParser.json());
+api.use(bodyParser.urlencoded({ extended: true }));
 api.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 api.post('/register', handleRegister);
