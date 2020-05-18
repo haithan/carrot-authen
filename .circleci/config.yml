@@ -53,11 +53,11 @@ workflows:
       - unit-test
       - docker-build-deploy-image:
           requires:
-            - test
+            - unit-test
       - deploy-staging:
           filters:
             branches:
               only:
                 - master 
           requires:
-            - docker-deploy-image
+            - docker-build-deploy-image
