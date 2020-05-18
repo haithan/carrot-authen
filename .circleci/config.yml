@@ -30,7 +30,7 @@ jobs:
       - run: | 
           docker build -t carrott/backendservices .  
           echo "Build done ---> start login"
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker login -u $DOCKER_LOGIN	-p $DOCKER_PASSWORD
           echo "login -----> push"
           docker push carrott/backendservices
   deploy-aws:
