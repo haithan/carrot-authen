@@ -1,41 +1,45 @@
-const connection = require("../../database/connection");
-const { createToken } = require("../../utils/jwt-token");
-const bcrypt = require("bcrypt");
+const passport = require('passport');
+const passportLocal = require('passport-local');
+const jwt = require('jsonwebtoken');
+const User = require('../../database/User');
+
+const secret = 'tempSecretPasswordThatWillNotRemainLikeThis';
+
+passport.use('login', new passportLocal.Strategy({
+  usernameField: 'email',
+  passwordField: 'password',
+  session: false,
+}, (email, password, done) => {
+  try {
+    User.findOne({ where: { email } }).then((user) => {
+      if (user === null) {
+        return done(null, false, { auth: false, message: 'bad username' });
+      } else {
+        user.validatePassword(password).then((validated) => {
+          if (!validated) return done(null, false, { auth: false, message: 'bad password' });
+          return done(null, user); 
+        });
+      }
+    });
+  } catch (err) {
+    return done(err);
+  }
+}));
 
 module.exports = async (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
-
-  connection.query(
-    "SELECT * FROM users WHERE email = ?",
-    [email],
-    async function (error, results, fields) {
-      if (error) {
-        res.json({
-          status: false,
-          message: "there are some error with query",
-        });
-      } else {
-        if (results.length > 0) {
-          if (bcrypt.compareSync(password, results[0].password)) {
-            const token = await createToken(results[0]);
-            res.json({
-              status: true,
-              token: token,
-            });
-          } else {
-            res.json({
-              status: false,
-              message: "Email and password does not match",
-            });
-          }
-        } else {
-          res.json({
-            status: false,
-            message: "Email does not exits",
+  passport.authenticate('login', (err, user, info) => {
+    if (err) console.error(err);
+    if (info) res.json(info);
+    req.logIn(user, (err) => {
+      User.findOne({ where: { email: user.email } }).then((u) => {
+        if (u) {
+          const token = jwt.sign({ id: u.id, username: u.username }, secret);
+          res.status(200).json({
+            auth: true,
+            token: token,
           });
         }
-      }
-    }
-  );
+      });
+    });
+  })(req, res, next);
 };
