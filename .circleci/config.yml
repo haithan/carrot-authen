@@ -33,7 +33,7 @@ jobs:
           docker login -u $DOCKER_LOGIN	-p $DOCKER_PASSWORD
           echo "login -----> push"
           docker push carrott/backendservices
-  deploy-aws:
+  deploy-staging:
     working_directory: ~/app
     docker:
       - image: circleci/python:latest
