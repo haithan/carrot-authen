@@ -28,8 +28,8 @@
     "util": "^0.12.3"
   },
   "devDependencies": {
-    "axios-debug-log": "^0.7.0",
-    "jest": "^26.0.1",
-    "nodemon": "^2.0.3"
+    "axios-debug-log": "0.7.0",
+    "jest": "26.0.1",
+    "nodemon": "2.0.3"
   }
 }
