@@ -6,9 +6,13 @@ const { promisify } = require('util');
 const sign = promisify(jwt.sign);
 const verify = promisify(jwt.verify);
 
-const createToken = (user) => {
-  const exp = new Date();
-  exp.setDate(exp.getDate() + 30);
+const createToken = (user, expires) => {
+  let exp;
+  if (expires) exp = expires;
+  else {
+    exp = new Date();
+    exp.setDate(exp.getDate() + 30);
+  }
 
   const data = {
     // https://auth0.com/docs/tokens/jwt-claims
@@ -16,7 +20,7 @@ const createToken = (user) => {
     iss: 'Carrott',
     exp: exp.getTime() / 1000,
     aud: 'Carrott',
-    nbf: new Date(Date.now()).getTime() / 1000,
+    nbf: (new Date(Date.now()).getTime() - 1000) / 1000,
     iat: new Date(Date.now()).getTime() / 1000,
     jti: uuidv4(),
   };
@@ -25,17 +29,16 @@ const createToken = (user) => {
     algorithm: 'RS256',
   };
 
-  return sign(data, config.jwt.privateKey, opt);
+  return sign(data, config.get('jwt.privateKey'), opt);
 };
 
 const verifyAndDecodeToken = async (token) => {
-  let decoded;
   try {
-    decoded = await verify(token, config.get('jwt.publicKey'));
+    const decoded = await verify(token, config.get('jwt.publicKey'));
+    return { isValid: true, decoded };
   } catch (e) {
     return { isValid: false, reason: e.message };
   }
-  return { isValid: true, decoded };
 };
 
 const uuidv4 = () => {

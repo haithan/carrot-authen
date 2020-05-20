@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize');
+const config = require('config');
 
-const sequelize = new Sequelize('mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott');
+const uri = config.get('db.uri');
+const sequelize = new Sequelize(uri);
 
 module.exports = sequelize;
