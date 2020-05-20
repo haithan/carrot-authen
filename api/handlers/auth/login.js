@@ -26,7 +26,7 @@ passport.use('login', new passportLocal.Strategy({
 
 module.exports = async (req, res, next) => {
   passport.authenticate('login', (err, user, info) => {
-    if (err) throw err;
+    if (err) return next(err);
     if (info) res.json(info);
     req.logIn(user, (err) => {
       if (err) throw err;
