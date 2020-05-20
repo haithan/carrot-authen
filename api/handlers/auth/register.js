@@ -7,7 +7,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  User.findOne({ where: { id }}, function(err, user) {
+  User.findOne({ where: { id }}, (err, user) => {
     done(err, user);
   });
 });

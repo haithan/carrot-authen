@@ -1,13 +1,13 @@
 const passport = require('passport');
 const passportJwt = require('passport-jwt');
+const config = require('../../config');
 const User = require('../database/User');
 
-const secret = 'tempSecretPasswordThatWillNotRemainLikeThis';
 
 passport.use('jwt', new passportJwt.Strategy(
   {
     jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
-    secretOrKey: secret,
+    secretOrKey: config.jwt.publicKey,
   },
   (payload, done) => {
     try {
