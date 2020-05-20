@@ -1,0 +1,14 @@
+{
+ "extends": [
+    "config:base",
+    "default:automergeDigest",
+    "default:automergePatch",
+    "default:automergeMinor",
+    "group:allNonMajor"
+  ],
+  "schedule": ["after 10pm and before 5am on every weekday", "every weekend"],
+  "timezone": "Europe/London",
+  "ignoreDeps": [],
+  "separateMinorPatch": true,
+  "assignees": ["vertig0ne", "jaherulalom"]
+}
