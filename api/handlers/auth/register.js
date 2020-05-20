@@ -1,15 +1,14 @@
-const User = require("../../database/User");
+const User = require('../../database/User');
 const passport = require('passport');
 const passportLocal = require('passport-local');
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id); 
- // where is this user.id going? Are we supposed to access this anywhere?
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser((id, done) => {
   User.findOne({ where: { id }}, function(err, user) {
-      done(err, user);
+    done(err, user);
   });
 });
 
@@ -34,12 +33,11 @@ passport.use('register', new passportLocal.Strategy({
 }));
 
 module.exports = async (req, res, next) => {
-  passport.authenticate('register', (err, user, info) => {
+  passport.authenticate('register', (err, user) => {
     if (err) throw err;
-    console.log(user, info);
     req.logIn(user, err => {
       if (err) throw err;
-      User.findOne({ where: { email: user.email } }).then(u => {
+      User.findOne({ where: { email: user.email } }).then(() => {
         res.status(200).json({ message: 'user created' });
       });
     });

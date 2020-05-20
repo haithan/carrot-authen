@@ -1,9 +1,7 @@
 const passport = require('passport');
 const passportLocal = require('passport-local');
-const jwt = require('jsonwebtoken');
 const User = require('../../database/User');
-
-const secret = 'tempSecretPasswordThatWillNotRemainLikeThis';
+const { createToken } = require('../../utils/jwt-token');
 
 passport.use('login', new passportLocal.Strategy({
   usernameField: 'email',
@@ -13,10 +11,10 @@ passport.use('login', new passportLocal.Strategy({
   try {
     User.findOne({ where: { email } }).then((user) => {
       if (user === null) {
-        return done(null, false, { auth: false, message: 'bad username' });
+        return done(null, false, { auth: false, message: 'invalid credentials' });
       } else {
         user.validatePassword(password).then((validated) => {
-          if (!validated) return done(null, false, { auth: false, message: 'bad password' });
+          if (!validated) return done(null, false, { auth: false, message: 'invalid credentials' });
           return done(null, user); 
         });
       }
@@ -28,15 +26,17 @@ passport.use('login', new passportLocal.Strategy({
 
 module.exports = async (req, res, next) => {
   passport.authenticate('login', (err, user, info) => {
-    if (err) console.error(err);
+    if (err) throw err;
     if (info) res.json(info);
     req.logIn(user, (err) => {
+      if (err) throw err;
       User.findOne({ where: { email: user.email } }).then((u) => {
         if (u) {
-          const token = jwt.sign({ id: u.id, username: u.username }, secret);
-          res.status(200).json({
-            auth: true,
-            token: token,
+          createToken(u.email).then((token) => {
+            res.status(200).json({
+              auth: true,
+              token: token,
+            });  
           });
         }
       });
