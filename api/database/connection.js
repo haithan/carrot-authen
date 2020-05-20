@@ -1,18 +1,7 @@
-const mysql = require("mysql");
+const Sequelize = require('sequelize');
+const config = require('config');
 
-const connection = mysql.createConnection({
-  host: "carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com",
-  port: 3306,
-  user: "admin",
-  password: "1qaz2wsx",
-  database: "carrott",
-});
+const uri = config.get('db.uri');
+const sequelize = new Sequelize(uri);
 
-connection.connect(function (err) {
-  if (!err) {
-    console.log("Database is connected");
-  } else {
-    console.log("Error while connecting with database");
-  }
-});
-module.exports = connection;
+module.exports = sequelize;
