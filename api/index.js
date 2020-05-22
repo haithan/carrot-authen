@@ -1,27 +1,29 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 
-const { version } = require('../package.json');
+const { version } = require("../package.json");
 const api = express();
-const swaggerUi = require('swagger-ui-express');
-const jsYaml = require('js-yaml');
-const passport = require('passport');
-const fs = require('fs');
+const swaggerUi = require("swagger-ui-express");
+const jsYaml = require("js-yaml");
+const passport = require("passport");
+const fs = require("fs");
 const swaggerDocument = jsYaml.safeLoad(
-  fs.readFileSync('api/openapi.yaml', 'utf-8')
+  fs.readFileSync("api/openapi.yaml", "utf-8")
 );
-const handleRegister = require('./handlers/auth/register');
-const handleLogin = require('./handlers/auth/login');
-const handlePasswordReset = require('./handlers/auth/password-reset');
+const handleRegister = require("./handlers/auth/register");
+const handleLogin = require("./handlers/auth/login");
+const handlePasswordReset = require("./handlers/auth/password-reset");
+const handleCompletePasswordReset = require("./handlers/auth/complete-password-reset");
 
 api.use(passport.initialize());
 api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: true }));
-api.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+api.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-api.post('/register', handleRegister);
-api.post('/login', handleLogin);
-api.post('/password-reset', handlePasswordReset);
+api.post("/register", handleRegister);
+api.post("/login", handleLogin);
+api.post("/password-reset", handlePasswordReset);
+api.post("/complete-password-reset", handleCompletePasswordReset);
 
 // convert validation error to json
 api.use((err, req, res, next) => {
@@ -40,7 +42,7 @@ api.use((err, req, res, next) => {
 
 // npm version
 /* istanbul ignore next */
-api.get('/version', (req, res) => {
+api.get("/version", (req, res) => {
   res.send(version);
 });
 
