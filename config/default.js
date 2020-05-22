@@ -9,6 +9,7 @@ module.exports = {
       "mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
   },
   mailer: {
+    address: "hello@carrott.com",
     password: "18260432Slk!",
   },
 };
