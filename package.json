@@ -54,8 +54,8 @@
     "lint-staged": "10.2.6",
     "nodemon": "2.0.4",
     "prettier": "2.0.5",
-    "sequelize-mock": "^0.10.2",
-    "sqlite3": "^4.2.0",
-    "supertest": "^4.0.2"
+    "sequelize-mock": "0.10.2",
+    "sqlite3": "4.2.0",
+    "supertest": "4.0.2"
   }
 }
