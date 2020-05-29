@@ -61,6 +61,7 @@ module.exports = async (req, res, next) => {
 
   //send email
   transporter.sendMail(message, function (err, info) {
+    /* istanbul ignore next */
     if (err) {
       console.log(err);
     } else {

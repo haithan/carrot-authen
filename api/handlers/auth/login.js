@@ -15,22 +15,31 @@ passport.use(
       try {
         User.findOne({ where: { email } }).then((user) => {
           if (user === null) {
-            return done(null, false, {
-              auth: false,
-              message: "invalid credentials",
-            });
+            return done(
+              {
+                message: "invalid credentials",
+                auth: false,
+                response: { status: 400 },
+              },
+              false
+            );
           } else {
             user.validatePassword(password).then((validated) => {
               if (!validated)
-                return done(null, false, {
-                  auth: false,
-                  message: "invalid credentials",
-                });
+                return done(
+                  {
+                    message: "invalid credentials",
+                    auth: false,
+                    response: { status: 400 },
+                  },
+                  false
+                );
               return done(null, user);
             });
           }
         });
       } catch (err) {
+        /* istanbul ignore next */
         return done(err);
       }
     }
@@ -38,20 +47,24 @@ passport.use(
 );
 
 module.exports = async (req, res, next) => {
+  const { cms } = req.query || { cms: false };
+
   passport.authenticate("login", (err, user, info) => {
     if (err) return next(err);
-    if (info) res.json(info);
+    if (info) return res.json(info);
     req.logIn(user, (err) => {
-      if (err) throw err;
-      User.findOne({ where: { email: user.email } }).then((u) => {
-        if (u) {
-          createToken(u.email).then((token) => {
-            res.status(200).json({
-              auth: true,
-              token: token,
-            });
-          });
-        }
+      if (err) return next(err);
+      if (cms && !user.isAdmin)
+        return next(
+          { message: "invalid credentials", response: { status: 400 } },
+          null
+        );
+
+      createToken(user).then((token) => {
+        res.status(200).json({
+          auth: true,
+          token: token,
+        });
       });
     });
   })(req, res, next);

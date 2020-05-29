@@ -26,11 +26,17 @@ User.init(
     },
     email: {
       type: DataTypes.STRING,
-      isEmail: true,
+      validate: {
+        isEmail: true,
+      },
     },
     encrypted_password: {
       type: DataTypes.STRING,
       min: 8,
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

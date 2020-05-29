@@ -1,5 +1,5 @@
 FROM node:lts-alpine
-WORKDIR '/app'
+WORKDIR /app
 COPY package.json .
 RUN yarn
 COPY . .
