@@ -7,6 +7,7 @@ const server = express();
 const port = parseInt(process.env.PORT, 10) || 3000;
 
 server.use(logger);
+server.use(cors());
 
 server.get("/ping", (req, res) => {
   return res.send("pong");

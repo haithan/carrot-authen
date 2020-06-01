@@ -42,7 +42,7 @@ User.init(
     updatedAt: DataTypes.DATE,
   },
   {
-    modelName: "user2",
+    modelName: "user",
     sequelize,
   }
 );
