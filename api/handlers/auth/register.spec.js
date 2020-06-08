@@ -2,6 +2,7 @@ const supertest = require("supertest");
 const app = require("../../../api");
 const request = supertest(app);
 const User = require("../../database/models/User");
+const constants = require("../../constants");
 
 describe("register", () => {
   beforeAll(async () => {
@@ -23,7 +24,7 @@ describe("register", () => {
       password: "TestPass",
     });
     expect(a.statusCode).toEqual(200);
-    expect(a.body).toEqual({ message: "user created" });
+    expect(a.body).toEqual({ message: constants.USER_CREATED });
   });
 
   it("no dupe", async () => {
@@ -32,7 +33,7 @@ describe("register", () => {
       password: "TestPass",
     });
     expect(a.statusCode).toEqual(400);
-    expect(a.body).toEqual({ message: "Email already exists" });
+    expect(a.body).toEqual({ message: constants.EMAIL_ALREADY_EXISTS });
   });
 
   it("no reg with not a real email", async () => {
@@ -41,6 +42,6 @@ describe("register", () => {
       password: "TestPass",
     });
     expect(a.statusCode).toEqual(400);
-    expect(a.body).toEqual({ message: "validation error" });
+    expect(a.body).toEqual({ message: constants.VALIDATION_ERROR });
   });
 });

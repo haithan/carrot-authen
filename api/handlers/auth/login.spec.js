@@ -2,6 +2,7 @@ const supertest = require("supertest");
 const app = require("../../../api");
 const request = supertest(app);
 const User = require("../../database/models/User");
+const constants = require("../../constants");
 
 describe("login", () => {
   beforeAll(async () => {
@@ -33,7 +34,7 @@ describe("login", () => {
     });
     expect(a.statusCode).toEqual(400);
     expect(a.body).toEqual(
-      expect.objectContaining({ message: "invalid credentials" })
+      expect.objectContaining({ message: constants.INVALID_CREDENTIALS })
     );
   });
 
@@ -44,7 +45,7 @@ describe("login", () => {
     });
     expect(a.statusCode).toEqual(400);
     expect(a.body).toEqual(
-      expect.objectContaining({ message: "invalid credentials" })
+      expect.objectContaining({ message: constants.INVALID_CREDENTIALS })
     );
   });
 
@@ -64,7 +65,7 @@ describe("login", () => {
     });
     expect(a.statusCode).toEqual(400);
     expect(a.body).toEqual(
-      expect.objectContaining({ message: "invalid credentials" })
+      expect.objectContaining({ message: constants.INVALID_CREDENTIALS })
     );
   });
 
@@ -75,7 +76,7 @@ describe("login", () => {
     });
     expect(a.statusCode).toEqual(400);
     expect(a.body).toEqual(
-      expect.objectContaining({ message: "invalid credentials" })
+      expect.objectContaining({ message: constants.INVALID_CREDENTIALS })
     );
   });
 });
