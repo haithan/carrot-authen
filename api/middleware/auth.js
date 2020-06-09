@@ -2,6 +2,7 @@ const passport = require("passport");
 const passportJwt = require("passport-jwt");
 const config = require("config");
 const User = require("../database/User");
+const constants = require("../../constants");
 
 /* istanbul ignore next */
 passport.use(
@@ -14,7 +15,8 @@ passport.use(
     (payload, done) => {
       try {
         User.findOne({ where: { email: payload.sub } }).then((user) => {
-          if (user === null) return done(null, false, { message: "bad user" });
+          if (user === null)
+            return done(null, false, { message: constants.USER_NOT_FOUND });
           return done(null, user);
         });
       } catch (err) {

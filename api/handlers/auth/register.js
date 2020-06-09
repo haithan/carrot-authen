@@ -1,4 +1,5 @@
 const User = require("../../database/models/User");
+const constants = require("../../constants");
 const passport = require("passport");
 const passportLocal = require("passport-local");
 const Sequelize = require("sequelize");
@@ -25,7 +26,7 @@ passport.use(
       User.findOne({ where: { email } }).then((user) => {
         if (user)
           return done({
-            message: "Email already exists",
+            message: constants.EMAIL_ALREADY_EXISTS,
             response: { status: 400 },
           });
         else {
@@ -52,12 +53,15 @@ module.exports = async (req, res, next) => {
         /* istanbul ignore next */
         if (err) throw err;
         User.findOne({ where: { email: user.email } }).then(() => {
-          res.status(200).json({ message: "user created" });
+          res.status(200).json({ message: constants.USER_CREATED });
         });
       });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError)
-        return next({ message: "validation error", response: { status: 400 } });
+        return next({
+          message: constants.VALIDATION_ERROR,
+          response: { status: 400 },
+        });
       return next(err);
     }
   })(req, res, next);

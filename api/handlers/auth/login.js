@@ -1,6 +1,7 @@
 const passport = require("passport");
 const passportLocal = require("passport-local");
 const User = require("../../database/models/User");
+const constants = require("../../constants");
 const { createToken } = require("../../utils/jwt-token");
 
 passport.use(
@@ -17,7 +18,7 @@ passport.use(
           if (user === null) {
             return done(
               {
-                message: "invalid credentials",
+                message: constants.INVALID_CREDENTIALS,
                 auth: false,
                 response: { status: 400 },
               },
@@ -28,7 +29,7 @@ passport.use(
               if (!validated)
                 return done(
                   {
-                    message: "invalid credentials",
+                    message: constants.INVALID_CREDENTIALS,
                     auth: false,
                     response: { status: 400 },
                   },
@@ -55,7 +56,7 @@ module.exports = async (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) throw err;
       if (cms && !user.isAdmin)
-        return next({ message: "invalid credentials" }, null);
+        return next({ message: constants.INVALID_CREDENTIALS }, null);
 
       createToken(user).then((token) => {
         res.status(200).json({
