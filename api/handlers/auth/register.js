@@ -1,8 +1,10 @@
-const User = require("../../database/models/User");
+const { User } = require("../../database/models")();
 const constants = require("../../constants");
 const passport = require("passport");
 const passportLocal = require("passport-local");
 const Sequelize = require("sequelize");
+const socket = require("../../service/notification");
+const EmailToken = require("../../database/models/EmailToken");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -53,7 +55,14 @@ module.exports = async (req, res, next) => {
         /* istanbul ignore next */
         if (err) throw err;
         User.findOne({ where: { email: user.email } }).then(() => {
-          res.status(200).json({ message: constants.USER_CREATED });
+          EmailToken.create({ email: user.email }).then(({ token }) => {
+            socket.emit("emailMessage", {
+              type: "register",
+              to: user.email,
+              content: token,
+            });
+            res.status(200).json({ message: constants.USER_CREATED });
+          });
         });
       });
     } catch (err) {

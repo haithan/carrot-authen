@@ -14,6 +14,7 @@ const handleRegister = require("./handlers/auth/register");
 const handleLogin = require("./handlers/auth/login");
 const handlePasswordReset = require("./handlers/auth/password-reset");
 const handleCompletePasswordReset = require("./handlers/auth/complete-password-reset");
+const handleVerifyEmail = require("./handlers/auth/verify");
 
 require("./service/notification");
 
@@ -26,6 +27,7 @@ api.post("/register", handleRegister);
 api.post("/login", handleLogin);
 api.post("/password-reset", handlePasswordReset);
 api.post("/complete-password-reset", handleCompletePasswordReset);
+api.get("/verify", handleVerifyEmail);
 
 // convert validation error to json
 api.use((err, req, res, next) => {
