@@ -1,9 +1,47 @@
 const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../connection");
+const models = require("./index");
+
 const bcrpyt = require("bcrypt");
 const saltRounds = 10;
 
 class User extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          min: 1,
+        },
+        email: {
+          type: DataTypes.STRING,
+          validate: {
+            isEmail: true,
+          },
+        },
+        encrypted_password: {
+          type: DataTypes.STRING,
+          min: 8,
+        },
+        verified: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+        },
+        isAdmin: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+        },
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
+      },
+      {
+        modelName: "user",
+        sequelize,
+      }
+    );
+  }
+
   async validatePassword(password) {
     const stored_pw = this.getDataValue("encrypted_password");
     return await bcrpyt.compare(password, stored_pw);
@@ -15,36 +53,5 @@ class User extends Model {
     await this.save();
   }
 }
-
-User.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      min: 1,
-    },
-    email: {
-      type: DataTypes.STRING,
-      validate: {
-        isEmail: true,
-      },
-    },
-    encrypted_password: {
-      type: DataTypes.STRING,
-      min: 8,
-    },
-    isAdmin: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE,
-  },
-  {
-    modelName: "user",
-    sequelize,
-  }
-);
 
 module.exports = User;

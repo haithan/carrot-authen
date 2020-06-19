@@ -1,6 +1,6 @@
 const passport = require("passport");
 const passportLocal = require("passport-local");
-const User = require("../../database/models/User");
+const { User } = require("../../database/models")();
 const constants = require("../../constants");
 const { createToken } = require("../../utils/jwt-token");
 

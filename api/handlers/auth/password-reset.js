@@ -1,8 +1,7 @@
 const nodemailer = require("nodemailer");
 const config = require("config");
 const { createToken } = require("../../utils/jwt-token");
-const User = require("../../database/models/User");
-const ResetToken = require("../../database/models/ResetToken");
+const { User, ResetToken } = require("../../database/models")();
 
 module.exports = async (req, res, next) => {
   const transporter = nodemailer.createTransport({
