@@ -1,7 +1,7 @@
 const supertest = require("supertest");
 const app = require("../../../api");
 const request = supertest(app);
-const User = require("../../database/models/User");
+const { User } = require("../../database/models")();
 
 const sendMailMock = jest.fn();
 
