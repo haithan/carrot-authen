@@ -15,6 +15,8 @@ const handleLogin = require("./handlers/auth/login");
 const handlePasswordReset = require("./handlers/auth/password-reset");
 const handleCompletePasswordReset = require("./handlers/auth/complete-password-reset");
 
+require("./service/notification");
+
 api.use(passport.initialize());
 api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: true }));

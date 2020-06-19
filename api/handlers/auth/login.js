@@ -54,7 +54,7 @@ module.exports = async (req, res, next) => {
     if (err) return next(err);
     if (info) return res.json(info);
     req.logIn(user, (err) => {
-      if (err) throw err;
+      if (err) return next(err);
       if (cms && !user.isAdmin)
         return next({ message: constants.INVALID_CREDENTIALS }, null);
 
