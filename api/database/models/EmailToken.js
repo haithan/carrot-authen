@@ -29,7 +29,8 @@ class EmailToken extends Model {
           allowNull: false,
           defaultValue: () => {
             const now = new Date();
-            return new Date(now.getDate() + 7);
+            now.setDate(now.getDate() + 3);
+            return now;
           },
         },
         used: {
