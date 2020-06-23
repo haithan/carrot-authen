@@ -56,7 +56,10 @@ module.exports = async (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) return next(err);
       if (cms && !user.isAdmin)
-        return next({ message: constants.INVALID_CREDENTIALS }, null);
+        return next(
+          { message: constants.INVALID_CREDENTIALS, response: { status: 400 } },
+          null
+        );
 
       createToken(user).then((token) => {
         res.status(200).json({

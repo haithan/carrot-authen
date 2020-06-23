@@ -1,10 +1,9 @@
-const { User } = require("../../database/models")();
 const constants = require("../../constants");
 const passport = require("passport");
 const passportLocal = require("passport-local");
 const Sequelize = require("sequelize");
 const socket = require("../../service/notification");
-const EmailToken = require("../../database/models/EmailToken");
+const { EmailToken, User } = require("../../database/models")();
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

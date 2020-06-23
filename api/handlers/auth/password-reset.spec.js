@@ -1,7 +1,15 @@
+jest.mock("sequelize");
+jest.mock("../../database/models");
+
 const supertest = require("supertest");
-const app = require("../../../api");
+const models = require("../../database/models");
+
+const mocks = require("../../database/mocks")();
+models.mockImplementation(() => mocks);
+
+const app = require("../..");
 const request = supertest(app);
-const { User } = require("../../database/models")();
+const constants = require("../../constants");
 
 const sendMailMock = jest.fn();
 
@@ -15,22 +23,18 @@ beforeEach(() => {
 });
 
 describe("password reset", () => {
-  beforeAll(async () => {
-    await User.drop();
-    await User.sync();
-    const user = await User.create({
-      id: 3,
-      email: "resetpw@test.com",
-      encrypted_password:
-        "$2b$10$YPkgX1jKlmhw/6dblCrrvu0uvZwJCWg9PYIKQIIeOBO0i7Uh/lOMa",
-      isAdmin: true,
-    });
-    await user.save();
+  beforeEach(() => {
+    mocks.sequelize.queryInterface.$clearResults();
+    mocks.User.$queryInterface.$clearResults();
+    mocks.EmailToken.$queryInterface.$clearResults();
+    mocks.ResetToken.$queryInterface.$clearResults();
+
+    models.mockImplementation(() => mocks);
   });
 
   it("can reset", async () => {
     const a = await request.post("/password-reset").send({
-      email: "resetpw@test.com",
+      email: "test@test.com",
     });
     expect(a.statusCode).toEqual(200);
     expect(a.body).toEqual(expect.objectContaining({ status: "ok" }));
