@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const crypto = require("crypto");
 const models = require("./index");
 
 class ResetToken extends Model {
@@ -13,18 +14,28 @@ class ResetToken extends Model {
         },
         email: {
           type: DataTypes.STRING,
-          isEmail: true,
+          validation: {
+            isEmail: true,
+          },
         },
         token: {
           type: DataTypes.STRING,
+          defaultValue: () => {
+            return crypto.randomBytes(20).toString("hex");
+          },
         },
         expiration: {
           type: DataTypes.DATE,
+          defaultValue: () => {
+            const now = new Date();
+            now.setDate(now.getDate() + 1);
+            return now;
+          },
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
         used: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.DATE,
         },
       },
       {
