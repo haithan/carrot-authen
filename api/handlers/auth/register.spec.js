@@ -57,7 +57,9 @@ describe("register", () => {
       password: "TestPass",
     });
     expect(a.statusCode).toEqual(200);
-    expect(a.body).toEqual({ message: constants.USER_CREATED });
+    expect(a.body).toEqual(
+      expect.objectContaining({ message: constants.USER_CREATED })
+    );
   });
 
   it("no dupe", async () => {

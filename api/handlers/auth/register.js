@@ -4,6 +4,7 @@ const passportLocal = require("passport-local");
 const Sequelize = require("sequelize");
 const socket = require("../../service/notification");
 const { EmailToken, User } = require("../../database/models")();
+const { createToken } = require("../../utils/jwt-token");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -60,7 +61,13 @@ module.exports = async (req, res, next) => {
               to: user.email,
               content: token,
             });
-            res.status(200).json({ message: constants.USER_CREATED });
+            createToken(user).then((token) => {
+              res.status(200).json({
+                auth: true,
+                token: token,
+                message: constants.USER_CREATED,
+              });
+            });
           });
         });
       });
