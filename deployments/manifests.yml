@@ -64,17 +64,17 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: $APP.carrott.com
+  name: $REPO.$ENV.carrott.com
   annotations:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-production"
 spec:
   tls:
     - hosts:
-        - $APP.carrott.com
-      secretName: tls-$APP.carrott.com
+        - $REPO.$ENV.carrott.com
+      secretName: tls-$REPO.$ENV.carrott.com
   rules:
-    - host: $APP.carrott.com
+    - host: $REPO.$ENV.carrott.com
       http:
         paths:
           - path: /
