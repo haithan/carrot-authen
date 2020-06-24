@@ -15,6 +15,7 @@ const handleLogin = require("./handlers/auth/login");
 const handlePasswordReset = require("./handlers/auth/password-reset");
 const handleCompletePasswordReset = require("./handlers/auth/complete-password-reset");
 const handleVerifyEmail = require("./handlers/auth/verify");
+const handleGoogleLogin = require("./middleware/google.auth");
 
 require("./service/notification");
 
@@ -28,6 +29,13 @@ api.post("/login", handleLogin);
 api.post("/password-reset", handlePasswordReset);
 api.post("/complete-password-reset", handleCompletePasswordReset);
 api.get("/verify", handleVerifyEmail);
+api.get(
+  "/login/google",
+  passport.authenticate("google", {
+    scope: ["email", "https://www.googleapis.com/auth/plus.login"],
+  })
+);
+api.get("/login/google/callback", handleGoogleLogin);
 
 // convert validation error to json
 api.use((err, req, res, next) => {

@@ -14,8 +14,11 @@ module.exports = {
     uri:
       "mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
   },
-  mailer: {
-    address: "hello@carrott.com",
-    password: "18260432Slk!",
+  auth: {
+    google: {
+      id:
+        "1008336361012-lc78mn7v1ji3dg7m9dj66u5ihgh4sjiu.apps.googleusercontent.com",
+      secret: "t7VQr_vD2-39tZlluwkyR0Xp",
+    },
   },
 };

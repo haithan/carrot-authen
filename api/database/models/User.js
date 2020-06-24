@@ -20,6 +20,11 @@ class User extends Model {
             isEmail: true,
           },
         },
+        googleId: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: true,
+        },
         encrypted_password: {
           type: DataTypes.STRING,
           min: 8,
