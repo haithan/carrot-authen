@@ -67,7 +67,7 @@ metadata:
   name: $REPO.$ENV.carrott.com
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    cert-manager.io/issuer: "letsencrypt-production"
 spec:
   tls:
     - hosts:
