@@ -15,6 +15,10 @@ module.exports = {
       "mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
   },
   auth: {
+    facebook: {
+      id: "1210809899251444",
+      secret: "58b45616e2a0ce14d77790bb17361838",
+    },
     google: {
       id:
         "1008336361012-lc78mn7v1ji3dg7m9dj66u5ihgh4sjiu.apps.googleusercontent.com",

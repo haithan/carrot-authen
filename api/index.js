@@ -15,8 +15,8 @@ const handleLogin = require("./handlers/auth/login");
 const handlePasswordReset = require("./handlers/auth/password-reset");
 const handleCompletePasswordReset = require("./handlers/auth/complete-password-reset");
 const handleVerifyEmail = require("./handlers/auth/verify");
+const handleFacebookLogin = require("./middleware/facebook.auth");
 const handleGoogleLogin = require("./middleware/google.auth");
-
 require("./service/notification");
 
 api.use(passport.initialize());
@@ -26,6 +26,11 @@ api.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 api.post("/register", handleRegister);
 api.post("/login", handleLogin);
+api.get(
+  "/login/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
+api.get("/login/facebook/callback", handleFacebookLogin);
 api.post("/password-reset", handlePasswordReset);
 api.post("/complete-password-reset", handleCompletePasswordReset);
 api.get("/verify", handleVerifyEmail);

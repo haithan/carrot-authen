@@ -20,6 +20,11 @@ class User extends Model {
             isEmail: true,
           },
         },
+        facebookId: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: true,
+        },
         googleId: {
           type: DataTypes.STRING,
           allowNull: true,
