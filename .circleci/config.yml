@@ -23,6 +23,8 @@ jobs:
           command: "yarn run test"
   docker-build:
     working_directory: ~/app
+    machine:
+      docker_layer_caching: false
     steps:
       - checkout
       - setup_remote_docker:
