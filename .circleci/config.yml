@@ -34,7 +34,7 @@ jobs:
           docker login -u $DOCKER_LOGIN	-p $DOCKER_PASSWORD
           echo "login -----> push"
           docker push "${DOCKER_LOGIN}/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1"
-  deploy-to-k8s-cluster:
+  deploy-to-k8s-staging-env:
     working_directory: ~/app
     docker:
       - image: mateothegreat/docker-alpine-gcloud-kubectl
@@ -43,12 +43,25 @@ jobs:
       - run:
           name: Set kubernetes deployment environment by branch
           command: |
-            if [ "${CIRCLE_BRANCH}" == "staging" ];
-            then
-              sed -i 's/<ENVIRONMENT>/staging/g' Makefile
-            else
-              sed -i 's/<ENVIRONMENT>/production/g' Makefile
-            fi
+            sed -i 's/<ENVIRONMENT>/staging/g' Makefile
+      - run:
+          name: deploy to k8s server
+          command: |
+            kubectl config set-cluster "$K8S_CLUSTER_NAME" --server="$K8S_URL" --insecure-skip-tls-verify=true
+            kubectl config set-credentials "$K8S_USER" --token="$K8S_TOKEN"
+            kubectl config set-context "$K8S_CONTEXT" --cluster="$K8S_CLUSTER_NAME" --user="$K8S_USER"
+            kubectl config use-context "$K8S_CONTEXT"
+            make install
+  deploy-to-k8s-production-env:
+    working_directory: ~/app
+    docker:
+      - image: mateothegreat/docker-alpine-gcloud-kubectl
+    steps:
+      - checkout
+      - run:
+          name: Set kubernetes deployment environment by branch
+          command: |
+            sed -i 's/<ENVIRONMENT>/production/g' Makefile
       - run:
           name: deploy to k8s server
           command: |
@@ -66,15 +79,21 @@ workflows:
           filters:
             branches:
               only:
-                - staging
                 - master
           requires:
             - unit-test
-      - deploy-to-k8s-cluster:
+      - deploy-to-k8s-staging-env:
           filters:
             branches:
               only:
-                - staging
                 - master
           requires:
             - docker-build
+      - deploy-to-k8s-production-env:
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - deploy-to-k8s-staging-env
