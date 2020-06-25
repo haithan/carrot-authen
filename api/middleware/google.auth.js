@@ -11,7 +11,8 @@ passport.use(
     {
       clientID: config.get("auth.google.id"),
       clientSecret: config.get("auth.google.secret"),
-      callbackURL: "http://localhost:3000/api/v1/login/google/callback",
+      callbackURL:
+        "https://auth-service.staging.carrott.com/api/v1/login/google/callback",
     },
     (accessToken, refreshToken, profile, cb) => {
       console.log(profile);
