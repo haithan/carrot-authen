@@ -15,6 +15,14 @@ module.exports = {
       "mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
   },
   auth: {
+    apple: {
+      client_id: "com.carrott.authServ",
+      team_id: "5SNT52N7HG",
+      callback_uri:
+        "https://auth-service.staging.carrott.com/api/v1/login/apple/callback",
+      key_id: "U56V8L387N",
+      scope: "email name",
+    },
     facebook: {
       id: "1210809899251444",
       secret: "58b45616e2a0ce14d77790bb17361838",

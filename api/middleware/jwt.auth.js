@@ -1,7 +1,7 @@
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
 const config = require("config");
-const User = require("../database/User");
+const { User } = require("../database/models")();
 const constants = require("../../constants");
 
 /* istanbul ignore next */

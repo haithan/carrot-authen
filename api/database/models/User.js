@@ -16,9 +16,15 @@ class User extends Model {
         },
         email: {
           type: DataTypes.STRING,
+          unique: true,
           validate: {
             isEmail: true,
           },
+        },
+        appleId: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: true,
         },
         facebookId: {
           type: DataTypes.STRING,
@@ -36,10 +42,12 @@ class User extends Model {
         },
         verified: {
           type: DataTypes.BOOLEAN,
+          allowNull: false,
           defaultValue: false,
         },
         isAdmin: {
           type: DataTypes.BOOLEAN,
+          allowNull: false,
           defaultValue: false,
         },
         createdAt: DataTypes.DATE,
