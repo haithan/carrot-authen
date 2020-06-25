@@ -3,61 +3,78 @@ jobs:
   unit-test:
     working_directory: ~/app
     docker:
-      - image: circleci/node:latest 
+      - image: circleci/node:latest
     steps:
       - checkout
       - run:
           name: Update npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache: 
+          command: "sudo npm install -g npm@latest"
+      - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install dependencies
           command: yarn install
-      - save_cache: 
+      - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
       - run:
-          name: Run tests 
-          command: 'yarn run test'
-  docker-build-deploy-image:
+          name: Run tests
+          command: "yarn run test"
+  docker-build:
     working_directory: ~/app
     machine:
       docker_layer_caching: false
     steps:
       - checkout
-      - run: | 
-          docker build -t carrott/backendservices .  
+      - run: |
+          docker build -t "$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1" .
+          docker tag "$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1" "${DOCKER_LOGIN}/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1"
           echo "Build done ---> start login"
           docker login -u $DOCKER_LOGIN	-p $DOCKER_PASSWORD
           echo "login -----> push"
-          docker push carrott/backendservices
-  deploy-staging:
+          docker push "${DOCKER_LOGIN}/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1"
+  deploy-to-k8s-cluster:
     working_directory: ~/app
     docker:
-      - image: circleci/python:latest
+      - image: mateothegreat/docker-alpine-gcloud-kubectl
     steps:
       - checkout
-      - run: 
-          name: Installing deployment dependencies
-          working_directory: /
-          command: 'sudo pip install awsebcli --upgrade'
-      - run: 
-          name: Deploying application to Elastic Beanstalk
-          command: eb deploy
+      - run:
+          name: Set kubernetes deployment environment by branch
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "staging" ];
+            then
+              sed -i 's/<ENVIRONMENT>/staging/g' Makefile
+            else
+              sed -i 's/<ENVIRONMENT>/production/g' Makefile
+            fi
+      - run:
+          name: deploy to k8s server
+          command: |
+            kubectl config set-cluster "$K8S_CLUSTER_NAME" --server="$K8S_URL" --insecure-skip-tls-verify=true
+            kubectl config set-credentials "$K8S_USER" --token="$K8S_TOKEN"
+            kubectl config set-context "$K8S_CONTEXT" --cluster="$K8S_CLUSTER_NAME" --user="$K8S_USER"
+            kubectl config use-context "$K8S_CONTEXT"
+            make install
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
       - unit-test
-      - docker-build-deploy-image:
-          requires:
-            - unit-test
-      - deploy-staging:
+      - docker-build:
           filters:
             branches:
               only:
-                - master 
+                - staging
+                - master
           requires:
-            - docker-build-deploy-image
+            - unit-test
+      - deploy-to-k8s-cluster:
+          filters:
+            branches:
+              only:
+                - staging
+                - master
+          requires:
+            - docker-build
