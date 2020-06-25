@@ -89,7 +89,7 @@ workflows:
                 - master
           requires:
             - docker-build
-      - deploy-to-k8s-production-env:
+      - request-approval-to-production:
           type: approval
           filters:
             branches:
@@ -97,3 +97,10 @@ workflows:
                 - master
           requires:
             - deploy-to-k8s-staging-env
+      - deploy-to-k8s-production-env:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - request-approval-to-production
