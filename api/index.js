@@ -13,7 +13,6 @@ const swaggerDocument = jsYaml.safeLoad(
 const handleRegister = require("./handlers/auth/register");
 const handleLogin = require("./handlers/auth/login");
 const handlePasswordReset = require("./handlers/auth/password-reset");
-const handleCompletePasswordReset = require("./handlers/auth/complete-password-reset");
 const handleVerifyEmail = require("./handlers/auth/verify");
 const handleAppleLogin = require("./middleware/apple.auth");
 const handleFacebookLogin = require("./middleware/facebook.auth");
@@ -35,7 +34,6 @@ api.get(
 );
 api.get("/login/facebook/callback", handleFacebookLogin);
 api.post("/password-reset", handlePasswordReset);
-api.post("/complete-password-reset", handleCompletePasswordReset);
 api.get("/verify", handleVerifyEmail);
 api.get(
   "/login/google",

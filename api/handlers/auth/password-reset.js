@@ -2,71 +2,65 @@ const nodemailer = require("nodemailer");
 const config = require("config");
 const { createToken } = require("../../utils/jwt-token");
 const { User, ResetToken } = require("../../database/models")();
+const socket = require("../../service/notification");
 
 module.exports = async (req, res, next) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: config.get("mailer.address"),
-      pass: config.get("mailer.password"),
-    },
-  });
+  try {
+    if (req.isAuthenticated()) {
+      const { email } = req.user;
+      const { current_password, new_password, confirm_password } = req.body;
 
-  const email = await User.findOne({ where: { email: req.body.email } });
-  if (email == null) {
-    return res.json({ status: "ok" });
-  }
+      const user = await User.findOne({ where: { email } });
+      const isPassword = await user.validatePassword(current_password);
 
-  await ResetToken.update(
-    {
-      used: 1,
-    },
-    {
-      where: {
-        email: req.body.email,
-      },
-    }
-  );
-
-  //Create a random reset token
-  const token = await createToken("arandomtoken");
-
-  console.log("------->", token);
-
-  //token expires after one hour
-  const expireDate = new Date();
-  expireDate.setDate(expireDate.getDate() + 1 / 24);
-
-  //insert token data into DB
-  await ResetToken.create({
-    email: req.body.email,
-    expiration: expireDate,
-    token: token,
-    used: 0,
-  });
-
-  //create email
-  const message = {
-    from: "hello@carrott.com",
-    to: req.body.email,
-    subject: "Your password reset request",
-    text:
-      "To reset your password, please click the link below.\n\nhttps://" +
-      "/user/reset-password?token=" +
-      encodeURIComponent(token) +
-      "&email=" +
-      req.body.email,
-  };
-
-  //send email
-  transporter.sendMail(message, function (err, info) {
-    /* istanbul ignore next */
-    if (err) {
-      console.log(err);
+      if (isPassword) {
+        if (new_password === confirm_password) {
+          await user.setPassword(new_password);
+          await user.save();
+          res.json({ message: "password changed" });
+        } else {
+          throw {
+            message: "passwords do not match",
+            response: { status: 400 },
+          };
+        }
+      } else {
+        throw {
+          message: "current password incorrect",
+          response: { status: 400 },
+        };
+      }
     } else {
-      console.log(info);
-    }
-  });
+      const { email, token, new_password, confirm_password } = req.body;
 
-  return res.json({ status: "ok" });
+      if (!token) {
+        const user = User.findOne({ where: { email } });
+        if (!user) res.json({ message: "ok" });
+        else {
+          const resetToken = await ResetToken.create({ email });
+          socket.emit("emailMessage", {
+            type: "resetPassword",
+            to: email,
+            content: token,
+          });
+          res.json({ message: "ok" });
+        }
+      } else {
+        const resetToken = await ResetToken.findOne({ where: { token } });
+        const user = await User.findOne({ where: { email: resetToken.email } });
+        if (new_password === confirm_password) {
+          await user.setPassword(new_password);
+          await user.save();
+          res.json({ message: "password changed" });
+        } else {
+          throw {
+            message: "passwords do not match",
+            response: { status: 400 },
+          };
+        }
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
 };

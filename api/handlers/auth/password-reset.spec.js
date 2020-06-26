@@ -11,17 +11,6 @@ const app = require("../..");
 const request = supertest(app);
 const constants = require("../../constants");
 
-const sendMailMock = jest.fn();
-
-jest.mock("nodemailer");
-const nodemailer = require("nodemailer");
-nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
-
-beforeEach(() => {
-  sendMailMock.mockClear();
-  nodemailer.createTransport.mockClear();
-});
-
 describe("password reset", () => {
   beforeEach(() => {
     mocks.sequelize.queryInterface.$clearResults();
@@ -37,8 +26,7 @@ describe("password reset", () => {
       email: "test@test.com",
     });
     expect(a.statusCode).toEqual(200);
-    expect(a.body).toEqual(expect.objectContaining({ status: "ok" }));
-    expect(sendMailMock).toHaveBeenCalled();
+    expect(a.body).toEqual(expect.objectContaining({ message: "ok" }));
   });
 
   it("no reset bad email", async () => {
@@ -46,6 +34,6 @@ describe("password reset", () => {
       email: "bad@email.com",
     });
     expect(a.statusCode).toEqual(200);
-    expect(a.body).toEqual(expect.objectContaining({ status: "ok" }));
+    expect(a.body).toEqual(expect.objectContaining({ message: "ok" }));
   });
 });
