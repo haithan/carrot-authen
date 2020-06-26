@@ -41,7 +41,7 @@ module.exports = async (req, res, next) => {
           socket.emit("emailMessage", {
             type: "resetPassword",
             to: email,
-            content: token,
+            content: resetToken.token,
           });
           res.json({ message: "ok" });
         }
