@@ -16,7 +16,7 @@ passport.use(
       privateKeyLocation: "./config/certs/AuthKey_U56V8L387N.p8",
       passReqToCallback: true,
     },
-    (req, accessToken, refreshToken, decodedIdToken, profile, cb) => {
+    (req, accessToken, refreshToken, profile, blank, cb) => {
       User.findOne({ where: { appleId: profile.email } })
         .then((user) => {
           if (!user) {
