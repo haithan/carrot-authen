@@ -17,16 +17,14 @@ passport.use(
       passReqToCallback: true,
     },
     (req, accessToken, refreshToken, decodedIdToken, profile, cb) => {
-      console.log(accessToken, refreshToken, decodedIdToken, profile);
-      // Assumptions were made
-      User.findOne({ where: { appleId: decodedIdToken } })
+      User.findOne({ where: { appleId: profile.email } })
         .then((user) => {
           if (!user) {
             // create user
             User.create({
               email: profile.email,
-              appleId: decodedIdToken,
-              verified: true,
+              appleId: profile.email,
+              verified: profile.email_verified,
             }).then((u) => {
               cb(null, u);
             });
