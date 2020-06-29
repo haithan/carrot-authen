@@ -25,8 +25,8 @@ passport.use(
               email: profile.email,
               appleId: profile.email,
               verified: profile.email_verified,
-            }).then((u) => {
-              cb(null, u);
+            }).then((user) => {
+              cb(null, user);
             });
           } else {
             cb(null, user);
@@ -53,6 +53,7 @@ module.exports = (req, res, next) => {
           message: "invalid token",
         });
       }
+      next(err);
     } else {
       createToken(user).then((token) => {
         res.status(200).json({
