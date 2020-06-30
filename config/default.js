@@ -18,19 +18,20 @@ module.exports = {
     apple: {
       client_id: "com.carrott.authServ",
       team_id: "5SNT52N7HG",
-      callback_uri:
-        "https://auth-service.staging.carrott.com/api/v1/login/apple/callback",
+      callback_uri: "carrott://Social/?provider=apple",
       key_id: "U56V8L387N",
       scope: "email name",
     },
     facebook: {
       id: "1210809899251444",
       secret: "58b45616e2a0ce14d77790bb17361838",
+      callback: "carrott://Social/?provider=facebook",
     },
     google: {
       id:
         "1008336361012-lc78mn7v1ji3dg7m9dj66u5ihgh4sjiu.apps.googleusercontent.com",
       secret: "t7VQr_vD2-39tZlluwkyR0Xp",
+      callback: "carrott://Social/?provider=google",
     },
   },
 };

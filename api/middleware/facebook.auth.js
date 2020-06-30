@@ -11,8 +11,7 @@ passport.use(
     {
       clientID: config.get("auth.facebook.id"),
       clientSecret: config.get("auth.facebook.secret"),
-      callbackURL:
-        "https://auth-service.staging.carrott.com/api/v1/login/facebook/callback",
+      callbackURL: config.get("auth.facebook.callback"),
       profileFields: ["id", "emails", "name"],
     },
     (accessToken, refreshToken, profile, cb) => {
