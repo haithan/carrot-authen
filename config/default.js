@@ -1,8 +1,7 @@
 const fs = require("fs");
 module.exports = {
   services: {
-    chat:
-      "http://chatservice-dev-env.eba-nhnapdm2.eu-west-2.elasticbeanstalk.com/",
+    chat: "https://chat-service.staging.carrott.com/",
   },
   jwt: {
     privateKey: fs.readFileSync("./config/certs/private.key", "utf8"),
