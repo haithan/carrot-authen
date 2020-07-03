@@ -45,10 +45,11 @@ module.exports = (req, res, next) => {
       });
     } else {
       createToken(user).then((token) => {
-        res.status(200).json({
-          auth: true,
-          token,
-        });
+        res.redirect(`carrott://Social/?provider=facebook&token=${token}`);
+        // res.status(200).json({
+        //   auth: true,
+        //   token,
+        // });
       });
     }
   })(req, res, next);
