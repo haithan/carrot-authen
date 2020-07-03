@@ -56,10 +56,11 @@ module.exports = (req, res, next) => {
       next(err);
     } else {
       createToken(user).then((token) => {
-        res.status(200).json({
-          auth: true,
-          token,
-        });
+        res.redirect(`carrott://Social/?provider=apple&token=${token}`);
+        // res.status(200).json({
+        //   auth: true,
+        //   token,
+        // });
       });
     }
   })(req, res, next);
