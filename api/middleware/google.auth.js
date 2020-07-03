@@ -14,7 +14,6 @@ passport.use(
       callbackURL: config.get("auth.google.callback"),
     },
     (accessToken, refreshToken, profile, cb) => {
-      console.log(profile);
       try {
         User.findOne({ where: { googleId: profile.id } }).then((user) => {
           if (!user) {
@@ -45,10 +44,11 @@ module.exports = (req, res, next) => {
       });
     } else {
       createToken(user).then((token) => {
-        res.status(200).json({
-          auth: true,
-          token,
-        });
+        res.redirect(`carrott://Social/?provider=google&token=${token}`);
+        // res.status(200).json({
+        //   auth: true,
+        //   token,
+        // });
       });
     }
   })(req, res, next);
