@@ -49,7 +49,7 @@
     "util": "^0.12.3"
   },
   "devDependencies": {
-    "axios-debug-log": "0.7.0",
+    "axios-debug-log": "0.8.0",
     "eslint": "7.3.1",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-prettier": "3.1.4",
