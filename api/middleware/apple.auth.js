@@ -2,7 +2,6 @@ const passport = require("passport");
 const AppleStrategy = require("passport-apple");
 const config = require("config");
 const { User } = require("../database/models")();
-const constants = require("../constants");
 const { createToken } = require("../utils/jwt-token");
 
 /* istanbul ignore next */
@@ -20,8 +19,7 @@ passport.use(
       User.findOne({ where: { appleId: profile.email } })
         .then((user) => {
           if (!user) {
-            // create user
-            User.create({
+            User.upsert({
               email: profile.email,
               appleId: profile.email,
               verified: profile.email_verified,
@@ -40,7 +38,7 @@ passport.use(
 );
 
 module.exports = (req, res, next) => {
-  passport.authenticate("apple", (err, user, info) => {
+  passport.authenticate("apple", (err, user) => {
     if (err) {
       if (err == "AuthorizationError") {
         res.json({
@@ -57,10 +55,6 @@ module.exports = (req, res, next) => {
     } else {
       createToken(user).then((token) => {
         res.redirect(`carrott://Social/?provider=apple&token=${token}`);
-        // res.status(200).json({
-        //   auth: true,
-        //   token,
-        // });
       });
     }
   })(req, res, next);

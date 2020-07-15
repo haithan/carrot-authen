@@ -2,7 +2,6 @@ const passport = require("passport");
 const FacebookStrategy = require("passport-facebook").Strategy;
 const config = require("config");
 const { User } = require("../database/models")();
-const constants = require("../constants");
 const { createToken } = require("../utils/jwt-token");
 
 /* istanbul ignore next */
@@ -18,7 +17,7 @@ passport.use(
       try {
         User.findOne({ where: { facebookId: profile.id } }).then((user) => {
           if (!user) {
-            User.create({
+            User.upsert({
               email: profile.emails[0].value,
               facebookId: profile.id,
               verified: true,
@@ -46,10 +45,6 @@ module.exports = (req, res, next) => {
     } else {
       createToken(user).then((token) => {
         res.redirect(`carrott://Social/?provider=facebook&token=${token}`);
-        // res.status(200).json({
-        //   auth: true,
-        //   token,
-        // });
       });
     }
   })(req, res, next);

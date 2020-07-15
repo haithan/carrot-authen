@@ -2,7 +2,6 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const config = require("config");
 const { User } = require("../database/models")();
-const constants = require("../constants");
 const { createToken } = require("../utils/jwt-token");
 
 /* istanbul ignore next */
@@ -17,7 +16,7 @@ passport.use(
       try {
         User.findOne({ where: { googleId: profile.id } }).then((user) => {
           if (!user) {
-            User.create({
+            User.upsert({
               email: profile.emails[0].value,
               googleId: profile.id,
               verified: profile.emails[0].verified,
@@ -36,7 +35,7 @@ passport.use(
 );
 
 module.exports = (req, res, next) => {
-  passport.authenticate("google", (err, user, info) => {
+  passport.authenticate("google", (err, user) => {
     if (err) {
       res.json({
         auth: false,
@@ -45,10 +44,6 @@ module.exports = (req, res, next) => {
     } else {
       createToken(user).then((token) => {
         res.redirect(`carrott://Social/?provider=google&token=${token}`);
-        // res.status(200).json({
-        //   auth: true,
-        //   token,
-        // });
       });
     }
   })(req, res, next);
