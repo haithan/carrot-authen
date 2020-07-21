@@ -1,8 +1,9 @@
 const passport = require("passport");
 const passportLocal = require("passport-local");
-const { User } = require("../../database/models")();
+const { User } = require("../../models")();
 const constants = require("../../constants");
 const { createToken } = require("../../utils/jwt-token");
+const { validationResult } = require("express-validator");
 
 passport.use(
   "login",
@@ -48,25 +49,40 @@ passport.use(
 );
 
 module.exports = async (req, res, next) => {
-  const { cms } = req.query || { cms: false };
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        message: constants.VALIDATION_ERROR,
+        errors: errors.array(),
+      });
+    }
 
-  passport.authenticate("login", (err, user, info) => {
-    if (err) return next(err);
-    if (info) return res.json(info);
-    req.logIn(user, (err) => {
+    const { cms } = req.query || { cms: false };
+
+    passport.authenticate("login", (err, user, info) => {
       if (err) return next(err);
-      if (cms && !user.isAdmin)
-        return next(
-          { message: constants.INVALID_CREDENTIALS, response: { status: 400 } },
-          null
-        );
+      if (info) return res.json(info);
+      req.logIn(user, (err) => {
+        if (err) return next(err);
+        if (cms && !user.isAdmin)
+          return next(
+            {
+              message: constants.INVALID_CREDENTIALS,
+              response: { status: 400 },
+            },
+            null
+          );
 
-      createToken(user).then((token) => {
-        res.status(200).json({
-          auth: true,
-          token: token,
+        createToken(user).then((token) => {
+          res.status(200).json({
+            auth: true,
+            token: token,
+          });
         });
       });
-    });
-  })(req, res, next);
+    })(req, res, next);
+  } catch (err) {
+    next(err);
+  }
 };

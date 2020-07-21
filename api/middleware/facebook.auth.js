@@ -1,7 +1,7 @@
 const passport = require("passport");
 const FacebookStrategy = require("passport-facebook").Strategy;
 const config = require("config");
-const { User } = require("../database/models")();
+const { User } = require("../models")();
 const { createToken } = require("../utils/jwt-token");
 
 /* istanbul ignore next */

@@ -1,10 +1,13 @@
-jest.mock("sequelize");
-jest.mock("../../database/models");
+const MockedSocket = require("socket.io-mock");
+jest.mock("../../models");
+jest.mock("../../utils/notification", () => {
+  return new MockedSocket();
+});
 
 const supertest = require("supertest");
-const models = require("../../database/models");
+const models = require("../../models");
 
-const mocks = require("../../database/mocks")();
+const mocks = require("../../mocks")();
 models.mockImplementation(() => mocks);
 
 const app = require("../..");
@@ -19,6 +22,10 @@ describe("register", () => {
     mocks.ResetToken.$queryInterface.$clearResults();
 
     models.mockImplementation(() => mocks);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("can register", async () => {
@@ -52,7 +59,7 @@ describe("register", () => {
       return Promise.resolve();
     });
 
-    const a = await request.post("/register").send({
+    const a = await request.post("/api/v1/register").send({
       email: "test2@test.com",
       password: "TestPass",
     });
@@ -63,7 +70,7 @@ describe("register", () => {
   });
 
   it("no dupe", async () => {
-    const a = await request.post("/register").send({
+    const a = await request.post("/api/v1/register").send({
       email: "test82369@test.com",
       password: "TestPass",
     });

@@ -1,8 +1,6 @@
-const nodemailer = require("nodemailer");
-const config = require("config");
-const { createToken } = require("../../utils/jwt-token");
-const { User, ResetToken } = require("../../database/models")();
-const socket = require("../../service/notification");
+const { User, ResetToken } = require("../../models")();
+const constants = require("../../constants");
+const socket = require("../../utils/notification");
 
 module.exports = async (req, res, next) => {
   try {
@@ -17,16 +15,16 @@ module.exports = async (req, res, next) => {
         if (new_password === confirm_password) {
           await user.setPassword(new_password);
           await user.save();
-          res.json({ message: "password changed" });
+          res.json({ message: constants.PASSWORD_SUCCESS });
         } else {
           throw {
-            message: "passwords do not match",
+            message: constants.PASSWORD_NOMATCH,
             response: { status: 400 },
           };
         }
       } else {
         throw {
-          message: "current password incorrect",
+          message: constants.PASSWORD_INCORRECT,
           response: { status: 400 },
         };
       }
@@ -35,7 +33,7 @@ module.exports = async (req, res, next) => {
 
       if (!token) {
         const user = User.findOne({ where: { email } });
-        if (!user) res.json({ message: "ok" });
+        if (!user) res.json({ message: constants.EMAIL_SENT });
         else {
           const resetToken = await ResetToken.create({ email });
           socket.emit("emailMessage", {
@@ -43,7 +41,7 @@ module.exports = async (req, res, next) => {
             to: email,
             content: resetToken.token,
           });
-          res.json({ message: "ok" });
+          res.json({ message: constants.EMAIL_SENT });
         }
       } else {
         const resetToken = await ResetToken.findOne({ where: { token } });
@@ -51,10 +49,10 @@ module.exports = async (req, res, next) => {
         if (new_password === confirm_password) {
           await user.setPassword(new_password);
           await user.save();
-          res.json({ message: "password changed" });
+          res.json({ message: constants.PASSWORD_SUCCESS });
         } else {
           throw {
-            message: "passwords do not match",
+            message: constants.PASSWORD_NOMATCH,
             response: { status: 400 },
           };
         }

@@ -1,16 +1,19 @@
-jest.mock("sequelize");
-jest.mock("../../database/models");
+const MockedSocket = require("socket.io-mock");
+jest.mock("../../models");
+jest.mock("../../utils/notification", () => {
+  return new MockedSocket();
+});
 
-const config = require("config");
 const supertest = require("supertest");
-const models = require("../../database/models");
+const models = require("../../models");
+const constants = require("../../constants");
 
-const mocks = require("../../database/mocks")();
+const mocks = require("../../mocks")();
 models.mockImplementation(() => mocks);
 
 const app = require("../..");
 const request = supertest(app);
-const constants = require("../../constants");
+models.mockImplementation(() => mocks);
 
 describe("login", () => {
   beforeEach(() => {
@@ -23,7 +26,7 @@ describe("login", () => {
   });
 
   it("can login", async () => {
-    const a = await request.post("/login").send({
+    const a = await request.post("/api/v1/login").send({
       email: "test@test.com",
       password: "TestPass",
     });
@@ -32,7 +35,7 @@ describe("login", () => {
   });
 
   it("can not login with bad email and password", async () => {
-    const a = await request.post("/login").send({
+    const a = await request.post("/api/v1/login").send({
       email: "baduser@test.com",
       password: "BadPass",
     });
@@ -43,7 +46,7 @@ describe("login", () => {
   });
 
   it("can not login with bad password", async () => {
-    const a = await request.post("/login").send({
+    const a = await request.post("/api/v1/login").send({
       email: "test5@test.com",
       password: "BadPass",
     });
@@ -54,7 +57,7 @@ describe("login", () => {
   });
 
   it("can cms login", async () => {
-    const a = await request.post("/login?cms=true").send({
+    const a = await request.post("/api/v1/login?cms=true").send({
       email: "test@test.com",
       password: "TestPass",
     });
@@ -87,7 +90,7 @@ describe("login", () => {
     });
     await mocks.User.$queueResult(data);
 
-    const a = await request.post("/login?cms=true").send({
+    const a = await request.post("/api/v1/login?cms=true").send({
       email: "test@test.com",
       password: "TestPass",
     });
@@ -98,7 +101,7 @@ describe("login", () => {
   });
 
   it("can not cms login with bad email and password", async () => {
-    const a = await request.post("/login?cms=true").send({
+    const a = await request.post("/api/v1/login?cms=true").send({
       email: "bad@email.com",
       password: "badPass",
     });

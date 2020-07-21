@@ -1,6 +1,6 @@
-const { Model, DataTypes } = require("sequelize");
+const { Model, DataTypes, Op } = require("sequelize");
 const crypto = require("crypto");
-const models = require("./index");
+const models = require("./");
 
 class EmailToken extends Model {
   static init(sequelize) {
@@ -44,6 +44,15 @@ class EmailToken extends Model {
         sequelize,
       }
     );
+  }
+
+  static async isValidToken(token) {
+    if (!token) return;
+    const res = await EmailToken.findOne({
+      where: { token, used: null, expiration: { [Op.gt]: new Date() } },
+    });
+    if (res) return;
+    else throw new Error("Token not valid or is expired");
   }
 }
 

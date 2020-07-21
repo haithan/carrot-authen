@@ -1,10 +1,13 @@
-jest.mock("sequelize");
-jest.mock("../../database/models");
+const MockedSocket = require("socket.io-mock");
+jest.mock("../../models");
+jest.mock("../../utils/notification", () => {
+  return new MockedSocket();
+});
 
 const supertest = require("supertest");
-const models = require("../../database/models");
+const models = require("../../models");
 
-const mocks = require("../../database/mocks")();
+const mocks = require("../../mocks")();
 models.mockImplementation(() => mocks);
 
 const app = require("../..");
@@ -22,18 +25,22 @@ describe("password reset", () => {
   });
 
   it("can reset", async () => {
-    const a = await request.post("/password-reset").send({
+    const a = await request.post("/api/v1/password-reset").send({
       email: "test@test.com",
     });
     expect(a.statusCode).toEqual(200);
-    expect(a.body).toEqual(expect.objectContaining({ message: "ok" }));
+    expect(a.body).toEqual(
+      expect.objectContaining({ message: constants.EMAIL_SENT })
+    );
   });
 
   it("no reset bad email", async () => {
-    const a = await request.post("/password-reset").send({
+    const a = await request.post("/api/v1/password-reset").send({
       email: "bad@email.com",
     });
     expect(a.statusCode).toEqual(200);
-    expect(a.body).toEqual(expect.objectContaining({ message: "ok" }));
+    expect(a.body).toEqual(
+      expect.objectContaining({ message: constants.EMAIL_SENT })
+    );
   });
 });
