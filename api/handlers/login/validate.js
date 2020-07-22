@@ -5,7 +5,7 @@ module.exports = [
     .not()
     .isEmpty()
     .isEmail()
-    .normalizeEmail(),
+    .normalizeEmail({ gmail_remove_dots: false, gmail_remove_dots: false }),
   check("password", "Your password must be at least 5 characters")
     .not()
     .isEmpty()
