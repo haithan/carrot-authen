@@ -10,17 +10,26 @@ jobs:
           name: Update npm
           command: "sudo npm install -g npm@latest"
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          keys:
+            - dependency-cache-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+            - dependency-cache-{{ checksum "package.json" }}
+            - dependency-cache-
+      - run:
+          name: Authenticate npm
+          command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Install dependencies
-          command: yarn install
+          command: npm ci
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
           paths:
-            - ./node_modules
+            - $HOME/.npm
       - run:
           name: Run tests
-          command: "yarn run test"
+          command: |
+            npm test --ci --reporters=jest-junit
+      - store_test_results:
+          path: ./test-results
   docker-build:
     working_directory: ~/app
     machine:
