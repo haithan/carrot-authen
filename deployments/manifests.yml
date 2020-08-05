@@ -29,6 +29,87 @@ spec:
           ports:
             - containerPort: $PORT
           imagePullPolicy: Always
+          env:
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: db_uri
+            - name: SERVICE_CHAT
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: service_chat
+            - name: JWT_PRIVATE
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: jwt_private
+            - name: JWT_PUBLIC
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: jwt_public
+            - name: JWT_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: jwt_server_auth
+            - name: AUTH_APPLE_CLIENT
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_apple_client
+            - name: AUTH_APPLE_TEAM
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_apple_team
+            - name: AUTH_APPLE_CALLBACK
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_apple_callback
+            - name: AUTH_APPLE_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_apple_key_id
+            - name: AUTH_APPLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_apple_key
+            - name: AUTH_FB_ID
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_fb_id
+            - name: AUTH_FB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_fb_secret
+            - name: AUTH_FB_CALLBACK
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_fb_callback
+            - name: AUTH_GOOG_ID
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_goog_id
+            - name: AUTH_GOOG_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_goog_secret
+            - name: AUTH_GOOG_CALLBACK
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: auth_goog_callback      
       imagePullSecrets:
         - name: $IMAGE_SECRET
 ---

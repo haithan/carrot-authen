@@ -20,6 +20,7 @@ module.exports = {
       callback_uri:
         "https://auth-service.staging.carrott.com/api/v1/login/apple/callback",
       key_id: "U56V8L387N",
+      key: fs.readFileSync("./config/certs/AuthKey_U56V8L387N.p8", "utf8"),
       scope: "email name",
     },
     facebook: {

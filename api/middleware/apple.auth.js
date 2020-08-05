@@ -12,7 +12,7 @@ passport.use(
       teamID: config.get("auth.apple.team_id"),
       callbackURL: config.get("auth.apple.callback_uri"),
       keyID: config.get("auth.apple.key_id"),
-      privateKeyLocation: "./config/certs/AuthKey_U56V8L387N.p8",
+      privateKeyString: config.get("auth.apple.key"),
       passReqToCallback: true,
     },
     (req, accessToken, refreshToken, profile, blank, cb) => {
