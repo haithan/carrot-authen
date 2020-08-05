@@ -22,6 +22,8 @@ Object.values(models).forEach((model) => {
   if (model.associate) model.associate(models);
 });
 
+sequelize.sync();
+
 module.exports = () => {
   return {
     ...models,
