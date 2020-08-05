@@ -30,6 +30,8 @@ spec:
             - containerPort: $PORT
           imagePullPolicy: Always
           env:
+            - name: NODE_ENV
+              value: $ENV
             - name: DB_URI
               valueFrom:
                 secretKeyRef:
