@@ -13,6 +13,10 @@ server.get("/ping", (req, res) => {
   return res.send("pong");
 });
 
+server.get("/test", (req, res) => {
+  res.json(process.env);
+});
+
 server.use("/", api);
 
 server.listen(port, (err) => {
