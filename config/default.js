@@ -13,6 +13,11 @@ module.exports = {
     uri:
       "mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
   },
+  s3: {
+    id: "ddd",
+    secret: "ddd",
+    bucket: "ddd",
+  },
   auth: {
     apple: {
       client_id: "com.carrott.authServ",

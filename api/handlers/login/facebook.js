@@ -1,6 +1,15 @@
 const { User, Profile } = require("../../models")();
 const { createToken } = require("../../utils/jwt-token");
 const axios = require("axios");
+const aws = require("aws-sdk");
+const config = require("config");
+
+const s3 = new aws.S3({
+  accessKeyId: config.get("s3.id"),
+  secretAccessKey: config.get("s3.secret"),
+  region: "eu-west-2",
+  bucket: config.get("s3.bucket"),
+});
 
 module.exports = async (req, res, next) => {
   try {
@@ -21,13 +30,37 @@ module.exports = async (req, res, next) => {
         token,
       });
     } else {
-      console.log("no user here");
       const u = await User.upsert({
         email,
         facebookId: id,
         verified: true,
       });
       const token = await createToken(u);
+
+      const [first_name, last_name] = name.split(" ");
+      const url = picture.data.url;
+      const buffer = await axios({
+        method: "get",
+        url,
+        responseType: "arraybuffer",
+      });
+
+      const { Location } = await s3
+        .upload({
+          Bucket: config.get("s3.bucket"),
+          Key: Date.now().toString(),
+          Body: Buffer.from(buffer.data, "binary"),
+          ACL: "public-read",
+        })
+        .promise();
+
+      await Profile.upsert({
+        email,
+        first_name,
+        last_name,
+        image_url: Location,
+      });
+
       res.status(200).json({
         auth: true,
         token,

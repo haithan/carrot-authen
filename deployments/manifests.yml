@@ -111,7 +111,22 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: production-secrets
-                  key: auth_goog_callback      
+                  key: AUTH_GOOG_CALLBACK
+            - name: S3_ID
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: s3_id
+            - name: S3_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: s3_secret
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: production-secrets
+                  key: s3_bucket
       imagePullSecrets:
         - name: $IMAGE_SECRET
 ---

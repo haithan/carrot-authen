@@ -10,6 +10,11 @@ module.exports = {
   db: {
     uri: process.env.DB_URI,
   },
+  s3: {
+    id: process.env.S3_ID,
+    secret: process.env.S3_SECRET,
+    bucket: process.env.S3_BUCKET,
+  },
   auth: {
     apple: {
       client_id: process.env.AUTH_APPLE_CLIENT,
