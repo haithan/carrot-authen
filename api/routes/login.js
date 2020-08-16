@@ -19,6 +19,7 @@ router.get(
   "/facebook",
   passport.authenticate("facebook", { scope: ["email"] })
 );
+router.post("/facebook", require("../handlers/login/facebook"));
 router.get("/facebook/callback", facebook);
 router.get(
   "/google",
