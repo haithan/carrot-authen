@@ -1,4 +1,4 @@
-const { User } = require("../../models")();
+const { User, Profile } = require("../../models")();
 const { createToken } = require("../../utils/jwt-token");
 const axios = require("axios");
 
@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
 
     const { data } = await axios({
       method: "get",
-      url: `https://graph.facebook.com/me?fields=id,name,email&access_token=${token}`,
+      url: `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${token}`,
     });
 
     console.log(data);
@@ -31,6 +31,13 @@ module.exports = async (req, res, next) => {
       res.status(200).json({
         auth: true,
         token,
+      });
+
+      const [first_name, last_name] = name.split(" ");
+      Profile.upsert({
+        email,
+        first_name,
+        last_name,
       });
     }
   } catch (err) {

@@ -11,11 +11,13 @@ const sequelize = new Sequelize(uri, opt);
 const User = require("./User");
 const ResetToken = require("./ResetToken");
 const EmailToken = require("./EmailToken");
+const Profile = require("./Profile");
 
 const models = {
   User: User.init(sequelize),
   ResetToken: ResetToken.init(sequelize),
   EmailToken: EmailToken.init(sequelize),
+  Profile: Profile.init(sequelize),
 };
 
 Object.values(models).forEach((model) => {
