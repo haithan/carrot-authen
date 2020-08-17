@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
 
     const { data } = await axios({
       method: "get",
-      url: `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${token}`,
+      url: `https://graph.facebook.com/me?fields=id,name,email,picture.height(961)&access_token=${token}`,
     });
 
     console.log(data);
