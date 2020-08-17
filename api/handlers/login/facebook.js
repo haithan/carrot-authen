@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
     });
 
     console.log(data);
-    const { id, name, email } = data;
+    const { id, name, email, picture } = data;
     const user = await User.findOne({ where: { facebookId: id } });
     if (user) {
       const token = await createToken(user);
