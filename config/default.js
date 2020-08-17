@@ -14,9 +14,9 @@ module.exports = {
       "mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
   },
   s3: {
-    id: "ddd",
-    secret: "ddd",
-    bucket: "ddd",
+    id: "AKIAX77KKAIZ7NJRB4FW",
+    secret: "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",
+    bucket: "carrott-image",
   },
   auth: {
     apple: {
