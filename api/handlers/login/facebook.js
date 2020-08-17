@@ -65,13 +65,6 @@ module.exports = async (req, res, next) => {
         auth: true,
         token,
       });
-
-      const [first_name, last_name] = name.split(" ");
-      Profile.upsert({
-        email,
-        first_name,
-        last_name,
-      });
     }
   } catch (err) {
     console.log(err);
