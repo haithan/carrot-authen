@@ -111,7 +111,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: production-secrets
-                  key: AUTH_GOOG_CALLBACK
+                  key: auth_goog_callback
             - name: S3_ID
               valueFrom:
                 secretKeyRef:
