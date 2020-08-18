@@ -20,7 +20,6 @@ module.exports = async (req, res, next) => {
       url: `https://graph.facebook.com/me?fields=id,name,email,picture.height(961)&access_token=${token}`,
     });
 
-    console.log(data);
     const { id, name, email, picture } = data;
     const user = await User.findOne({ where: { facebookId: id } });
     if (user) {

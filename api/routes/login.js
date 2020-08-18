@@ -29,4 +29,6 @@ router.get(
 );
 router.get("/google/callback", google);
 
+router.post("/apple", require("../handlers/login/apple"));
+
 module.exports = { name, router };
