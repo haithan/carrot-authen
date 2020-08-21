@@ -14,6 +14,7 @@ if (validate) router[type]("/", validate, handler);
 else router[type]("/", handler);
 
 router.get("/apple", passport.authenticate("apple"));
+router.post("/apple", require("../handlers/login/apple"));
 router.post("/apple/callback", apple);
 router.get(
   "/facebook",
@@ -27,8 +28,7 @@ router.get(
     scope: ["email", "https://www.googleapis.com/auth/plus.login"],
   })
 );
+router.post("/google", require("../handlers/login/google"));
 router.get("/google/callback", google);
-
-router.post("/apple", require("../handlers/login/apple"));
 
 module.exports = { name, router };
