@@ -1,9 +1,18 @@
 const config = require("config");
 const axios = require("axios");
+const aws = require("aws-sdk");
+
 const { OAuth2Client } = require("google-auth-library");
 
 const { User, Profile } = require("../../models")();
 const { createToken } = require("../../utils/jwt-token");
+
+const s3 = new aws.S3({
+  accessKeyId: config.get("s3.id"),
+  secretAccessKey: config.get("s3.secret"),
+  region: "eu-west-2",
+  bucket: config.get("s3.bucket"),
+});
 
 const client = new OAuth2Client(config.get("auth.google.id"));
 
