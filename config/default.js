@@ -11,7 +11,7 @@ module.exports = {
   },
   db: {
     uri:
-      "mariadb://admin:1qaz2wsx@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
+      "mariadb://admin:grup1held_marn4WESK@carrott-node.cmoyikxbbpvu.eu-west-2.rds.amazonaws.com/carrott",
   },
   s3: {
     id: "AKIAX77KKAIZ7NJRB4FW",
