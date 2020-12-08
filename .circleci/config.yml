@@ -3,7 +3,7 @@ jobs:
   unit-test:
     working_directory: ~/app
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node@sha256:4fbecf101d387eed16d4dae54d7df7db57d2b85749996a77c0be8b4b2dcedd4d
     steps:
       - checkout
       - run:
