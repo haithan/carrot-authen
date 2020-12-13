@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.734.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "config": "^3.3.1",
@@ -52,15 +52,15 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "eslint": "7.11.0",
-    "eslint-config-prettier": "6.14.0",
-    "eslint-plugin-prettier": "3.1.4",
+    "eslint": "7.15.0",
+    "eslint-config-prettier": "6.15.0",
+    "eslint-plugin-prettier": "3.2.0",
     "husky": "4.3.5",
     "jest": "26.6.3",
     "jest-junit": "11.1.0",
-    "lint-staged": "10.4.2",
+    "lint-staged": "10.5.3",
     "nodemon": "2.0.6",
-    "prettier": "2.1.2",
+    "prettier": "2.2.1",
     "sequelize-mock": "0.10.2",
     "supertest": "4.0.2"
   }
