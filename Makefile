@@ -3,8 +3,8 @@ include .make/Makefile.inc
 VERSION			?= $(shell git rev-parse HEAD)
 NS				?= default
 REPO			?= auth-service
-IMAGE			?= docker.io/carrott/$(REPO):$(VERSION)
-IMAGE_SECRET	?= circle-ci-auth
+IMAGE			?= docker.io/smartprivacyapp/$(REPO):$(VERSION)
+IMAGE_SECRET	?= carrot-docker-auth-staging
 ENV 			?= <ENVIRONMENT>
 APP				?= $(REPO)-$(ENV)
 PORT			?= 3000
