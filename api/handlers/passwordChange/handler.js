@@ -13,13 +13,6 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    if (!req.isAuthenticated()) {
-      throw {
-        message: constants.UNAUTHORIZED,
-        response: { status: 401 },
-      };
-    }
-
     const { id } = req.user;
     const { current_password, new_password } = req.body;
 
