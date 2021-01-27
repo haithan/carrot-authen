@@ -13,12 +13,6 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    console.warn("-----> DATA VALIDATION", {
-      isAuth: req.isAuthenticated(),
-      current_password: req.body.current_password,
-      new_password: req.body.new_password,
-    });
-
     if (!req.isAuthenticated()) {
       throw {
         message: constants.UNAUTHORIZED,
