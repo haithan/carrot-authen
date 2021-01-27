@@ -1,27 +1,31 @@
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
 const config = require("config");
-const { User } = require("../database/models")();
-const constants = require("../../constants");
+const { User } = require("../models")();
+const constants = require("../constants");
 
 /* istanbul ignore next */
-passport.use(
-  "jwt",
-  new passportJwt.Strategy(
-    {
-      jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
-      secretOrKey: config.get("jwt.publicKey"),
-    },
-    (payload, done) => {
-      try {
-        User.findOne({ where: { email: payload.sub } }).then((user) => {
-          if (user === null)
-            return done(null, false, { message: constants.USER_NOT_FOUND });
-          return done(null, user);
-        });
-      } catch (err) {
-        return done(err);
+module.exports = () => {
+  return passport.use(
+    "jwt",
+    new passportJwt.Strategy(
+      {
+        jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderWithScheme(
+          "Bearer"
+        ),
+        secretOrKey: config.get("jwt.publicKey"),
+      },
+      (payload, done) => {
+        try {
+          User.findOne({ where: { email: payload.sub } }).then((user) => {
+            if (user === null)
+              return done(null, false, { message: constants.USER_NOT_FOUND });
+            return done(null, user);
+          });
+        } catch (err) {
+          return done(err);
+        }
       }
-    }
-  )
-);
+    )
+  );
+};

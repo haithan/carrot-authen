@@ -6,6 +6,7 @@ const { version } = require("../package.json");
 const api = express();
 
 api.use(passport.initialize());
+require("./middleware/jwt.auth")();
 api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: true }));
 
